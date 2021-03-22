@@ -10,5 +10,5 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 pub fn calculate(expression: &str) -> String {
-    engine::calculate(expression).into()
+    engine::calculate(expression)
 }
