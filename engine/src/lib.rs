@@ -1,3 +1,5 @@
+pub mod expressions;
+pub mod parser;
 pub mod scanner;
 pub mod token;
 pub fn calculate(val: &str) -> String {
