@@ -79,3 +79,7 @@ where
         _ => None,
     }
 }
+
+// TODO: Simplify logic for getting the operators
+// TODO: Add ability for grouping with ()
+// TODO: Add tests for the parser
