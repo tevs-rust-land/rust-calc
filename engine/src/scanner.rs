@@ -1,5 +1,5 @@
 use crate::token::{self, Position, Token, TokenWithContext};
-use itertools::{multipeek, MultiPeek};
+use std::iter::Peekable;
 use std::str;
 pub enum ScannerError {
     UnexpecredCharacter(char),
@@ -8,7 +8,7 @@ pub enum ScannerError {
 struct Scanner<'a> {
     current_lexeme: String,
     current_position: Position,
-    source: MultiPeek<str::Chars<'a>>,
+    source: Peekable<str::Chars<'a>>,
 }
 
 impl<'a> Scanner<'a> {
@@ -16,7 +16,7 @@ impl<'a> Scanner<'a> {
         Scanner {
             current_lexeme: "".into(),
             current_position: Position::initial(),
-            source: multipeek(source.chars()),
+            source: source.chars().into_iter().peekable(),
         }
     }
 
@@ -58,7 +58,6 @@ impl<'a> Scanner<'a> {
         Some(result.map(|token| self.add_context(token, initial_position)))
     }
     fn peek_check(&mut self, check: &dyn Fn(char) -> bool) -> bool {
-        self.source.reset_peek();
         match self.source.peek() {
             Some(&c) => check(c),
             None => false,
