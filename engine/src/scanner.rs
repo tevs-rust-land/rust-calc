@@ -113,5 +113,14 @@ pub fn scan(source: &str) -> (Vec<TokenWithContext>, Vec<ScannerError>) {
     (tokens, errors)
 }
 
-// TODO: Remove need for multipeek, use standard library iter.
-// TODO:  Add tests for the scanner
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_can_scan_addition_expression() {
+        let source = r#"1+1"#;
+        let (scanned_tokens, err) = scan(source);
+        assert_eq!(scanned_tokens.len(), 3);
+        assert_eq!(err.len(), 0);
+    }
+}

@@ -1,14 +1,13 @@
 pub struct Literal(pub String);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Operation {
-    Minus,
     Division,
     Addition,
     Multiply,
     Subtraction,
 }
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 
 pub enum Expression {
     Literal(String),
