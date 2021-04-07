@@ -113,5 +113,4 @@ pub fn scan(source: &str) -> (Vec<TokenWithContext>, Vec<ScannerError>) {
     (tokens, errors)
 }
 
-// TODO: Remove need for multipeek, use standard library iter.
 // TODO:  Add tests for the scanner

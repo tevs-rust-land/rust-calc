@@ -98,4 +98,39 @@ where
 }
 
 // TODO: Add ability for grouping with ()
-// TODO: Add tests for the parser
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::expressions::{Expression, Operation};
+    use crate::scanner;
+    #[test]
+    fn test_can_parse_addition_expression() {
+        let source = r#"1+1"#;
+        let (scanned_tokens, _err) = scanner::scan(source);
+        let parsed_expression = parse(&scanned_tokens);
+        assert_eq!(
+            vec![Expression::Binary(
+                Box::new(Expression::Literal("1".to_string())),
+                Operation::Addition,
+                Box::new(Expression::Literal("1".to_string()))
+            )],
+            parsed_expression
+        )
+    }
+
+    #[test]
+    fn test_can_parse_subtraction_expression() {
+        let source = r#"5-2"#;
+        let (scanned_tokens, _err) = scanner::scan(source);
+        let parsed_expression = parse(&&scanned_tokens);
+        assert_eq!(
+            vec![Expression::Binary(
+                Box::new(Expression::Literal("5".to_string())),
+                Operation::Subtraction,
+                Box::new(Expression::Literal("2".to_string()))
+            )],
+            parsed_expression
+        )
+    }
+}
