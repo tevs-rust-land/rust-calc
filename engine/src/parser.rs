@@ -1,4 +1,4 @@
-use crate::expressions::Expression;
+use crate::expressions::{Expression, ExpressionErrors};
 use crate::token::{Token, TokenWithContext};
 use std::iter::Peekable;
 
@@ -41,14 +41,18 @@ mod operators {
     }
 }
 
-pub fn parse(tokens: &[TokenWithContext]) -> Vec<Expression> {
+pub fn parse(tokens: &[TokenWithContext]) -> (Vec<Expression>, Vec<ExpressionErrors>) {
     let mut target: Vec<Expression> = vec![];
+    let mut errors: Vec<ExpressionErrors> = vec![];
     let mut peekable_tokens = tokens.iter().peekable();
     while let Some(expr) = addition(&mut peekable_tokens) {
-        target.push(expr)
+        match expr {
+            Expression::Error(error) => errors.push(error),
+            expr => target.push(expr),
+        }
     }
 
-    target
+    (target, errors)
 }
 
 fn addition<'a, I>(tokens: &mut Peekable<I>) -> Option<Expression>
@@ -95,12 +99,16 @@ where
         Token::DigitLiteral(num) => Some(Expression::Literal(num.to_string())),
         Token::OpeningBracket => {
             let expression = addition(tokens)?;
-            let closing_bracket = tokens.next()?;
-            if closing_bracket.token != Token::ClosingBracket {
-                return None;
+            let element = tokens.next()?;
+            match &element.token {
+                Token::ClosingBracket => Some(Expression::Grouping(Box::new(expression))),
+                e => {
+                    let error_message = format!("Expected ( but got {}", e);
+                    Some(Expression::Error(ExpressionErrors::UnexpectedElement(
+                        error_message,
+                    )))
+                }
             }
-
-            Some(Expression::Grouping(Box::new(expression)))
         }
         _ => None,
     }
@@ -109,13 +117,13 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::expressions::{Expression, Operation};
+    use crate::expressions::{Expression, ExpressionErrors, Operation};
     use crate::scanner;
     #[test]
     fn test_can_parse_addition_expression() {
         let source = r#"1+1"#;
         let (scanned_tokens, _err) = scanner::scan(source);
-        let parsed_expression = parse(&scanned_tokens);
+        let (parsed_expression, _errors) = parse(&scanned_tokens);
         assert_eq!(
             vec![Expression::Binary(
                 Box::new(Expression::Literal("1".to_string())),
@@ -130,7 +138,7 @@ mod tests {
     fn test_can_parse_subtraction_expression() {
         let source = r#"5-2"#;
         let (scanned_tokens, _err) = scanner::scan(source);
-        let parsed_expression = parse(&&scanned_tokens);
+        let (parsed_expression, _errors) = parse(&&scanned_tokens);
         assert_eq!(
             vec![Expression::Binary(
                 Box::new(Expression::Literal("5".to_string())),
@@ -144,8 +152,7 @@ mod tests {
     fn test_can_parse_grouped_expression() {
         let source = r#"(5-2)"#;
         let (scanned_tokens, _err) = scanner::scan(source);
-        let parsed_expression = parse(&&scanned_tokens);
-        println!("{:?}", parsed_expression);
+        let (parsed_expression, _errors) = parse(&&scanned_tokens);
         assert_eq!(
             vec![Expression::Grouping(Box::new(Expression::Binary(
                 Box::new(Expression::Literal("5".to_string())),
@@ -153,6 +160,18 @@ mod tests {
                 Box::new(Expression::Literal("2".to_string()))
             )))],
             parsed_expression
+        )
+    }
+
+    #[test]
+    fn test_detect_error_from_grouped_expression() {
+        let source = r#"(5-2+"#;
+        let (scanned_tokens, _err) = scanner::scan(source);
+        let (_parsed_expression, errors) = parse(&&scanned_tokens);
+        let error_message = "Expected ( but got +".to_string();
+        assert_eq!(
+            vec![ExpressionErrors::UnexpectedElement(error_message)],
+            errors
         )
     }
 }
