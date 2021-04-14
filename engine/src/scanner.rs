@@ -50,6 +50,8 @@ impl<'a> Scanner<'a> {
             '-' => Ok(Token::Subtraction),
             '+' => Ok(Token::Addition),
             '/' => Ok(Token::Division),
+            '(' => Ok(Token::OpeningBracket),
+            ')' => Ok(Token::ClosingBracket),
             c if token::is_whitespace(c) => Ok(Token::WhiteSpace),
             c if token::is_digit(c) => Ok(self.digit()),
             c => Err(ScannerError::UnexpecredCharacter(c)),

@@ -93,11 +93,18 @@ where
     let current_token = tokens.next()?;
     match &current_token.token {
         Token::DigitLiteral(num) => Some(Expression::Literal(num.to_string())),
+        Token::OpeningBracket => {
+            let expression = addition(tokens)?;
+            let closing_bracket = tokens.next()?;
+            if closing_bracket.token != Token::ClosingBracket {
+                return None;
+            }
+
+            Some(Expression::Grouping(Box::new(expression)))
+        }
         _ => None,
     }
 }
-
-// TODO: Add ability for grouping with ()
 
 #[cfg(test)]
 mod tests {
@@ -130,6 +137,21 @@ mod tests {
                 Operation::Subtraction,
                 Box::new(Expression::Literal("2".to_string()))
             )],
+            parsed_expression
+        )
+    }
+    #[test]
+    fn test_can_parse_grouped_expression() {
+        let source = r#"(5-2)"#;
+        let (scanned_tokens, _err) = scanner::scan(source);
+        let parsed_expression = parse(&&scanned_tokens);
+        println!("{:?}", parsed_expression);
+        assert_eq!(
+            vec![Expression::Grouping(Box::new(Expression::Binary(
+                Box::new(Expression::Literal("5".to_string())),
+                Operation::Subtraction,
+                Box::new(Expression::Literal("2".to_string()))
+            )))],
             parsed_expression
         )
     }

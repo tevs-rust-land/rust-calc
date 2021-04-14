@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Token {
     Division,
     Addition,
@@ -6,6 +6,8 @@ pub enum Token {
     Subtraction,
     WhiteSpace,
     DigitLiteral(String),
+    OpeningBracket,
+    ClosingBracket,
 }
 
 pub type Lexeme = String;

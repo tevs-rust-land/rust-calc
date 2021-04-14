@@ -12,4 +12,5 @@ pub enum Operation {
 pub enum Expression {
     Literal(String),
     Binary(Box<Expression>, Operation, Box<Expression>),
+    Grouping(Box<Expression>),
 }
