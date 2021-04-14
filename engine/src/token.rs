@@ -1,4 +1,6 @@
-#[derive(Debug)]
+use std::fmt;
+
+#[derive(Debug, PartialEq, Eq)]
 pub enum Token {
     Division,
     Addition,
@@ -6,6 +8,23 @@ pub enum Token {
     Subtraction,
     WhiteSpace,
     DigitLiteral(String),
+    OpeningBracket,
+    ClosingBracket,
+}
+
+impl fmt::Display for Token {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Token::Division => write!(f, "/"),
+            Token::Addition => write!(f, "+"),
+            Token::Multiply => write!(f, "*"),
+            Token::Subtraction => write!(f, "-"),
+            Token::WhiteSpace => write!(f, "Whitespace"),
+            Token::DigitLiteral(literal) => write!(f, "Literal {}", literal),
+            Token::OpeningBracket => write!(f, "("),
+            Token::ClosingBracket => write!(f, ")"),
+        }
+    }
 }
 
 pub type Lexeme = String;
