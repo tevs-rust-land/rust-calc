@@ -164,7 +164,7 @@ mod tests {
     }
 
     #[test]
-    fn test_detect_error_from_grouped_expression() {
+    fn test_detect_error_from_unclosed_grouped_expression() {
         let source = r#"(5-2+"#;
         let (scanned_tokens, _err) = scanner::scan(source);
         let (_parsed_expression, errors) = parse(&&scanned_tokens);
