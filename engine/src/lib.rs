@@ -9,6 +9,7 @@ pub fn calculate(val: &str) -> String {
     }
     let (parsed_result, _errors) = parser::parse(&math_tokens);
     let mut result: f64 = 0.0;
+    // TODO: Improve this expression, maybe use a fold ?
     for expression in parsed_result {
         result += expression.execute()
     }
@@ -26,4 +27,5 @@ mod tests {
 
         assert!((result - 2.0).abs() < error_margin)
     }
+    // TODO: Add more tests for the calculator
 }
