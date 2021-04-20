@@ -7,6 +7,7 @@ pub fn calculate(val: &str) -> String {
     if !errors.is_empty() {
         return format!("{:?}", errors);
     }
+    // TODO: parsed_result should be a single expression. Maybe break from the first expression returned from the parser.
     let (parsed_result, _errors) = parser::parse(&math_tokens);
     let mut result: f64 = 0.0;
     // TODO: Improve this expression, maybe use a fold ?
