@@ -1,6 +1,8 @@
 use crate::token::{self, Position, Token, TokenWithContext};
 use std::iter::Peekable;
 use std::str;
+
+#[derive(Debug)]
 pub enum ScannerError {
     UnexpecredCharacter(char),
 }

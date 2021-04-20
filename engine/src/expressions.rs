@@ -21,3 +21,28 @@ pub enum Expression {
 pub enum ExpressionErrors {
     UnexpectedElement(String),
 }
+
+impl Expression {
+    pub fn execute(&self) -> f64 {
+        match self {
+            Expression::Literal(str) => str
+                .to_owned()
+                .parse::<f64>()
+                .expect("Failed to parse number"),
+            Expression::Binary(left, operation, right) => {
+                let left = Expression::execute(left);
+                let right = Expression::execute(right);
+                match &operation {
+                    Operation::Addition => left + right,
+                    Operation::Division => left / right,
+                    Operation::Multiply => left * right,
+                    Operation::Subtraction => left - right,
+                }
+            }
+            Expression::Grouping(expr) => Expression::execute(expr),
+            Expression::Error(_) => {
+                unreachable!()
+            }
+        }
+    }
+}
