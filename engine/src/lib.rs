@@ -2,19 +2,21 @@ pub mod expressions;
 pub mod parser;
 pub mod scanner;
 pub mod token;
-pub fn calculate(val: &str) -> String {
+pub fn calculate(val: &str) -> Result<f64, String> {
     let (math_tokens, errors) = scanner::scan(val);
     if !errors.is_empty() {
-        return format!("{:?}", errors);
+        return Err(format!("{:?}", errors));
     }
-    // TODO: parsed_result should be a single expression. Maybe break from the first expression returned from the parser.
-    let (parsed_result, _errors) = parser::parse(&math_tokens);
-    let mut result: f64 = 0.0;
-    // TODO: Improve this expression, maybe use a fold ?
-    for expression in parsed_result {
-        result += expression.execute()
+    let (parsed_results, errors) = parser::parse(&math_tokens);
+    if !errors.is_empty() {
+        return Err(format!("{:?}", errors));
     }
-    format!("{}", result)
+    let result: f64 = parsed_results
+        .into_iter()
+        .map(|expression| expression.execute())
+        .sum();
+
+    Ok(result)
 }
 
 #[cfg(test)]
@@ -23,10 +25,17 @@ mod tests {
     #[test]
     fn it_should_calculate_simple_addition() {
         let error_margin = f64::EPSILON;
-        let result = calculate("1 + 1");
-        let result = result.parse::<f64>().unwrap();
+        let result = calculate("1 + 1").expect("This basic calculation should be parsed correctly");
+        let result = result;
 
         assert!((result - 2.0).abs() < error_margin)
     }
-    // TODO: Add more tests for the calculator
+    #[test]
+    fn it_should_calculate_complex_math() {
+        let error_margin = f64::EPSILON;
+
+        let expr = "1 + (5-1) + 3 + (4 * 5)";
+        let result = calculate(expr).expect("This basic calculation should be parsed correctly");
+        assert!((result - 28.0).abs() < error_margin)
+    }
 }
