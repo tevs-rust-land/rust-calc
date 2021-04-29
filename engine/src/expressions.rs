@@ -25,7 +25,6 @@ pub enum ExpressionErrors {
 impl Expression {
     pub fn execute(&self) -> f64 {
         match self {
-            // TODO: Improve error handling here maybe?
             Expression::Literal(str) => str
                 .to_owned()
                 .parse::<f64>()
