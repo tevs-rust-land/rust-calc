@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { debounce } from "throttle-debounce";
-
 export default function Home() {
   const [expression, setExpression] = useState("");
   const [result, setResult] = useState({
@@ -10,20 +8,24 @@ export default function Home() {
     setExpression(e.target.value);
   };
 
+  const computeResult = ({ calc, expression }) => {
+    try {
+      const result = calc.calculate(expression);
+      return {
+        type: "success",
+        data: result,
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        data: error,
+      };
+    }
+  };
+
   useEffect(() => {
     import("wasm-calc").then((calc) => {
-      try {
-        const result = calc.calculate(expression);
-        setResult({
-          type: "success",
-          data: result,
-        });
-      } catch (error) {
-        setResult({
-          type: "error",
-          data: error,
-        });
-      }
+      setResult(computeResult({ calc, expression }));
     });
   }, [expression]);
   return (
