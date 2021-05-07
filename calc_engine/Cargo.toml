@@ -1,9 +1,11 @@
 [package]
-name = "engine"
+name = "calc_engine"
 version = "0.1.0"
 authors = ["Tevinthuku <tevinthuku@gmail.com>"]
 edition = "2018"
-
+description = "An engine / tool that performs calculations."
+license = "MIT"
+keywords = ["parser", "calculator"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

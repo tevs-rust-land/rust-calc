@@ -4,7 +4,7 @@ use std::str;
 
 #[derive(Debug)]
 pub enum ScannerError {
-    UnexpecredCharacter(char),
+    UnexpectedCharacter(char),
     NumberParsingError(String),
 }
 
@@ -57,7 +57,7 @@ impl<'a> Scanner<'a> {
             ')' => Ok(Token::ClosingBracket),
             c if token::is_whitespace(c) => Ok(Token::WhiteSpace),
             c if token::is_digit(c) => self.digit(),
-            c => Err(ScannerError::UnexpecredCharacter(c)),
+            c => Err(ScannerError::UnexpectedCharacter(c)),
         };
 
         Some(result.map(|token| self.add_context(token, initial_position)))

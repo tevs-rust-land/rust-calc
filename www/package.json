@@ -10,6 +10,7 @@
     "next": "latest",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "throttle-debounce": "^3.0.1",
     "wasm-calc": "file:../wasm/pkg"
   },
   "license": "MIT"

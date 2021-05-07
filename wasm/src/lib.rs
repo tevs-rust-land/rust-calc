@@ -10,5 +10,5 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 pub fn calculate(expression: &str) -> Result<f64, JsValue> {
-    engine::calculate(expression).map_err(|error| JsValue::from_str(&error))
+    calc_engine::calculate(expression).map_err(|error| JsValue::from_str(&error))
 }
