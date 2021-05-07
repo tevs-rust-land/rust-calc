@@ -1,5 +1,3 @@
-pub struct Literal(pub String);
-
 #[derive(Debug, PartialEq, Eq)]
 pub enum Operation {
     Division,
@@ -7,10 +5,10 @@ pub enum Operation {
     Multiply,
     Subtraction,
 }
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq)]
 
 pub enum Expression {
-    Literal(String),
+    Literal(f64),
     Binary(Box<Expression>, Operation, Box<Expression>),
     Grouping(Box<Expression>),
     Error(ExpressionErrors),
@@ -25,10 +23,7 @@ pub enum ExpressionErrors {
 impl Expression {
     pub fn execute(&self) -> f64 {
         match self {
-            Expression::Literal(str) => str
-                .to_owned()
-                .parse::<f64>()
-                .expect("Failed to parse number"),
+            Expression::Literal(num) => *num,
             Expression::Binary(left, operation, right) => {
                 let left = Expression::execute(left);
                 let right = Expression::execute(right);

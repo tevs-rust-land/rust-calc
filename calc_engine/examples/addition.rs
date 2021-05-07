@@ -1,4 +1,4 @@
-use engine::calculate;
+use calc_engine::calculate;
 
 fn main() -> Result<(), String> {
     let _res = calculate("1 + 1")?;

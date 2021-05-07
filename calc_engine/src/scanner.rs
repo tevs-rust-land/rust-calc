@@ -4,7 +4,8 @@ use std::str;
 
 #[derive(Debug)]
 pub enum ScannerError {
-    UnexpecredCharacter(char),
+    UnexpectedCharacter(char),
+    NumberParsingError(String),
 }
 
 struct Scanner<'a> {
@@ -55,8 +56,8 @@ impl<'a> Scanner<'a> {
             '(' => Ok(Token::OpeningBracket),
             ')' => Ok(Token::ClosingBracket),
             c if token::is_whitespace(c) => Ok(Token::WhiteSpace),
-            c if token::is_digit(c) => Ok(self.digit()),
-            c => Err(ScannerError::UnexpecredCharacter(c)),
+            c if token::is_digit(c) => self.digit(),
+            c => Err(ScannerError::UnexpectedCharacter(c)),
         };
 
         Some(result.map(|token| self.add_context(token, initial_position)))
@@ -74,11 +75,14 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn digit(&mut self) -> token::Token {
+    fn digit(&mut self) -> Result<token::Token, ScannerError> {
         self.advance_while(&|c| token::is_digit(c));
         let literal_length = self.current_lexeme.len();
-        let num = self.current_lexeme.chars().take(literal_length).collect();
-        Token::DigitLiteral(num)
+        let num: String = self.current_lexeme.chars().take(literal_length).collect();
+        let num = num
+            .parse::<f64>()
+            .map_err(|_| ScannerError::NumberParsingError(num))?;
+        Ok(Token::DigitLiteral(num))
     }
 }
 
@@ -101,7 +105,7 @@ pub fn scan_into_iterator<'a>(
     }
 }
 
-pub fn scan(source: &str) -> (Vec<TokenWithContext>, Vec<ScannerError>) {
+pub fn scan(source: &str) -> Result<Vec<TokenWithContext>, Vec<ScannerError>> {
     let mut tokens = Vec::new();
     let mut errors = Vec::new();
 
@@ -114,7 +118,11 @@ pub fn scan(source: &str) -> (Vec<TokenWithContext>, Vec<ScannerError>) {
             Err(error) => errors.push(error),
         }
     }
-    (tokens, errors)
+    if errors.is_empty() {
+        Ok(tokens)
+    } else {
+        Err(errors)
+    }
 }
 
 #[cfg(test)]
@@ -123,8 +131,7 @@ mod tests {
     #[test]
     fn test_can_scan_addition_expression() {
         let source = r#"1+1"#;
-        let (scanned_tokens, err) = scan(source);
+        let scanned_tokens = scan(source).expect("1 + 1 was scanned with an error");
         assert_eq!(scanned_tokens.len(), 3);
-        assert_eq!(err.len(), 0);
     }
 }
