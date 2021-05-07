@@ -118,10 +118,10 @@ pub fn scan(source: &str) -> Result<Vec<TokenWithContext>, Vec<ScannerError>> {
             Err(error) => errors.push(error),
         }
     }
-    if errors.len() > 0 {
-        Err(errors)
-    } else {
+    if errors.is_empty() {
         Ok(tokens)
+    } else {
+        Err(errors)
     }
 }
 

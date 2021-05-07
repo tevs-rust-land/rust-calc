@@ -5,10 +5,8 @@ pub mod token;
 pub fn calculate(val: &str) -> Result<f64, String> {
     let math_tokens = scanner::scan(val).map_err(|errors| format!("{:?}", errors))?;
 
-    let (parsed_results, errors) = parser::parse(&math_tokens);
-    if !errors.is_empty() {
-        return Err(format!("{:?}", errors));
-    }
+    let parsed_results = parser::parse(&math_tokens).map_err(|errors| format!("{:?}", errors))?;
+
     let result: f64 = parsed_results
         .into_iter()
         .map(|expression| expression.execute())
