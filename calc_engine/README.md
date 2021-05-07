@@ -11,11 +11,11 @@ I'm using the top-down recursive descent parsing techque. (Input is read from Le
 use calc_engine;
 
 func main() {
-    let res = calculate("1 + 1")?;
+    let res = calc_engine::calculate("1 + 1")?;
     let error_margin = f64::EPSILON;
     assert!((result - 2.0).abs() < error_margin);
 
-    let res = calculate("(1 + 1) + 3")?;
+    let res = calc_engine::calculate("(1 + 1) + 3")?;
 
 }
 
@@ -23,7 +23,8 @@ func main() {
 
 ## Still to be done
 
-[] - Bug fixes
-[] - Logarithmic expressions
-[] - More tests..
+- [ ] Bug fixes
+- [ ] Logarithmic expressions
+- [ ] More tests..
+
 Not in any particular order.
