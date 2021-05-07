@@ -21,4 +21,19 @@ Crate [Link](https://crates.io/crates/calc_engine)
 The wasm wrapper is really just a wrapper for the engine which makes it accessible to browser clients.
 It really just has 1 function. `calculate` which passes the input to the engine. The wrapper has been built with [wasm-pack](https://github.com/rustwasm/wasm-pack)
 
+#### Running the build (from wasm)
+
+Install wasm-pack, assuming you have rust installed.
+
+```sh
+cargo install --git https://github.com/rustwasm/wasm-pack.git
+
+cd wasm
+
+wasm-pack build
+
+```
+
 ### The UI
+
+The UI is just a 1 page app built with Next that takes the expression from an input & returns the result or the error incase a bad expression was encountered.

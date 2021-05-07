@@ -5,10 +5,23 @@ This Project is a wraper of the [Engine](https://github.com/tevs-rust-land/rust-
 ## Usage
 
 ```js
-import * as calc from "wasm-calc";
-
-calc.calculate("1 + 1"); // returns 3 :).. Just kidding, returns 2
+import("wasm-calc").then((calc) => {
+  try {
+    const result = calc.calculate("1 + 1");
+    // returns 3 :).. Just kidding, result =  2
+  } catch (error) {}
+});
 ```
+
+### Return type
+
+We get back a
+
+```rs
+Result<f64, JsValue>
+```
+
+which in JS translates to `number | Error(string)`, hence the need for a try catch.
 
 ## Improvements to be made & TODOS
 

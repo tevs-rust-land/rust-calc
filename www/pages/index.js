@@ -1,25 +1,40 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { debounce } from "throttle-debounce";
 
 export default function Home() {
-  useEffect(() => {
-    import("wasm-calc").then((wasm) => {
-      try {
-        console.log(typeof wasm.calculate("1 + 12"));
+  const [expression, setExpression] = useState("");
+  const [result, setResult] = useState({
+    type: "idle",
+  });
+  const onInputChange = (e) => {
+    setExpression(e.target.value);
+  };
 
-        console.log(wasm.calculate("1 + 12"));
+  useEffect(() => {
+    import("wasm-calc").then((calc) => {
+      try {
+        const result = calc.calculate(expression);
+        setResult({
+          type: "success",
+          data: result,
+        });
       } catch (error) {
-        console.log(error);
+        setResult({
+          type: "error",
+          data: error,
+        });
       }
     });
-  }, []);
+  }, [expression]);
   return (
     <div className="container">
       <h3>
-        🦀 <span className="title">+</span> 🕸 {"    "}{" "}
+        🦀 <span className="title">+</span> 🕸
         <span className="title">Calculator</span>
       </h3>
-      <input placeholder="Input" />
+      <input placeholder="Input" value={expression} onChange={onInputChange} />
+      {result.type === "success" && <h4>{result.data}</h4>}
+      {result.type === "error" && <pre>{result.data}</pre>}
       <style jsx>{`
         .title {
           margin-left: 5px;
@@ -41,6 +56,11 @@ export default function Home() {
         }
         input:focus {
           outline: none;
+        }
+        pre {
+          font-weight: bold;
+          white-space: pre-wrap;
+          word-wrap: break-word;
         }
       `}</style>
 

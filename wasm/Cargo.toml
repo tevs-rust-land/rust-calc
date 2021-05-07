@@ -1,6 +1,6 @@
 [package]
 name = "wasm-calc"
-version = "0.2.2"
+version = "0.3.1"
 authors = ["Tevinthuku <tevinthuku@gmail.com>"]
 edition = "2018"
 
