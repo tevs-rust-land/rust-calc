@@ -1,13 +1,13 @@
 use std::fmt;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq)]
 pub enum Token {
     Division,
     Addition,
     Multiply,
     Subtraction,
     WhiteSpace,
-    DigitLiteral(String),
+    DigitLiteral(f64),
     OpeningBracket,
     ClosingBracket,
 }

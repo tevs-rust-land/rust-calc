@@ -96,7 +96,7 @@ where
 {
     let current_token = tokens.next()?;
     match &current_token.token {
-        Token::DigitLiteral(num) => Some(Expression::Literal(num.to_string())),
+        Token::DigitLiteral(num) => Some(Expression::Literal(*num)),
         Token::OpeningBracket => {
             let expression = addition(tokens)?;
             let element = tokens.next()?;
@@ -126,9 +126,9 @@ mod tests {
         let (parsed_expression, _errors) = parse(&scanned_tokens);
         assert_eq!(
             vec![Expression::Binary(
-                Box::new(Expression::Literal("1".to_string())),
+                Box::new(Expression::Literal(1.0)),
                 Operation::Addition,
-                Box::new(Expression::Literal("1".to_string()))
+                Box::new(Expression::Literal(1.0))
             )],
             parsed_expression
         )
@@ -141,9 +141,9 @@ mod tests {
         let (parsed_expression, _errors) = parse(&&scanned_tokens);
         assert_eq!(
             vec![Expression::Binary(
-                Box::new(Expression::Literal("5".to_string())),
+                Box::new(Expression::Literal(5.0)),
                 Operation::Subtraction,
-                Box::new(Expression::Literal("2".to_string()))
+                Box::new(Expression::Literal(2.0))
             )],
             parsed_expression
         )
@@ -155,9 +155,9 @@ mod tests {
         let (parsed_expression, _errors) = parse(&&scanned_tokens);
         assert_eq!(
             vec![Expression::Grouping(Box::new(Expression::Binary(
-                Box::new(Expression::Literal("5".to_string())),
+                Box::new(Expression::Literal(5.0)),
                 Operation::Subtraction,
-                Box::new(Expression::Literal("2".to_string()))
+                Box::new(Expression::Literal(2.0))
             )))],
             parsed_expression
         )

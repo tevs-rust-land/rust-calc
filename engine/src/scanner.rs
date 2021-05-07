@@ -5,6 +5,7 @@ use std::str;
 #[derive(Debug)]
 pub enum ScannerError {
     UnexpecredCharacter(char),
+    NumberParsingError(String),
 }
 
 struct Scanner<'a> {
@@ -55,7 +56,7 @@ impl<'a> Scanner<'a> {
             '(' => Ok(Token::OpeningBracket),
             ')' => Ok(Token::ClosingBracket),
             c if token::is_whitespace(c) => Ok(Token::WhiteSpace),
-            c if token::is_digit(c) => Ok(self.digit()),
+            c if token::is_digit(c) => self.digit(),
             c => Err(ScannerError::UnexpecredCharacter(c)),
         };
 
@@ -74,11 +75,14 @@ impl<'a> Scanner<'a> {
         }
     }
 
-    fn digit(&mut self) -> token::Token {
+    fn digit(&mut self) -> Result<token::Token, ScannerError> {
         self.advance_while(&|c| token::is_digit(c));
         let literal_length = self.current_lexeme.len();
-        let num = self.current_lexeme.chars().take(literal_length).collect();
-        Token::DigitLiteral(num)
+        let num: String = self.current_lexeme.chars().take(literal_length).collect();
+        let num = num
+            .parse::<f64>()
+            .map_err(|_| ScannerError::NumberParsingError(num))?;
+        Ok(Token::DigitLiteral(num))
     }
 }
 
