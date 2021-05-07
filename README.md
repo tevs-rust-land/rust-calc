@@ -47,8 +47,5 @@ Unterminated expression
 ![image](https://user-images.githubusercontent.com/12128153/117509800-887ed980-af93-11eb-9b18-a9d203529c25.png)
 
 
-This project has been made possible by Rust & WebAssembly
-
-![image](https://user-images.githubusercontent.com/12128153/117473350-894b4780-af62-11eb-8590-0db8bd07bf81.png)
-
+This project has been made possible by Rust & WebAssembly 🦀 + 🕸
 
