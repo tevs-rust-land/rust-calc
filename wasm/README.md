@@ -1,6 +1,6 @@
 ## Wasm-calc
 
-This Project is a wraper of the [Engine](https://github.com/tevs-rust-land/rust-calc/calc_engine) built in Pure Rust using top-down recursive descent.
+This Project is a wraper around the [Engine](https://github.com/tevs-rust-land/rust-calc/calc_engine) which scans & parses a math expression from string format to the result of the expression.
 
 ## Usage
 
