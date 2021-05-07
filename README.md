@@ -1,6 +1,6 @@
 ## Rust-Calc
+![image](https://user-images.githubusercontent.com/12128153/117509590-32119b00-af93-11eb-91fc-8560eeaf5fa6.png)
 
-![image](https://user-images.githubusercontent.com/12128153/117473350-894b4780-af62-11eb-8590-0db8bd07bf81.png)
 
 This Project has 3 parts
 
@@ -37,3 +37,18 @@ wasm-pack build
 ### The UI
 
 The UI is just a 1 page app built with Next that takes the expression from an input & returns the result or the error incase a bad expression was encountered.
+Happy path
+![image](https://user-images.githubusercontent.com/12128153/117509590-32119b00-af93-11eb-91fc-8560eeaf5fa6.png)
+
+Unexpected character
+![image](https://user-images.githubusercontent.com/12128153/117509696-61280c80-af93-11eb-8439-e0eaa5da5ba1.png)
+
+Unterminated expression
+![image](https://user-images.githubusercontent.com/12128153/117509800-887ed980-af93-11eb-9b18-a9d203529c25.png)
+
+
+This project has been made possible by Rust & WebAssembly
+
+![image](https://user-images.githubusercontent.com/12128153/117473350-894b4780-af62-11eb-8590-0db8bd07bf81.png)
+
+
