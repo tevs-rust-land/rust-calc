@@ -1,5 +1,3 @@
-pub struct Literal(pub String);
-
 #[derive(Debug, PartialEq, Eq)]
 pub enum Operation {
     Division,
