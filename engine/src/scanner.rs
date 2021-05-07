@@ -105,7 +105,7 @@ pub fn scan_into_iterator<'a>(
     }
 }
 
-pub fn scan(source: &str) -> (Vec<TokenWithContext>, Vec<ScannerError>) {
+pub fn scan(source: &str) -> Result<Vec<TokenWithContext>, Vec<ScannerError>> {
     let mut tokens = Vec::new();
     let mut errors = Vec::new();
 
@@ -118,7 +118,11 @@ pub fn scan(source: &str) -> (Vec<TokenWithContext>, Vec<ScannerError>) {
             Err(error) => errors.push(error),
         }
     }
-    (tokens, errors)
+    if errors.len() > 0 {
+        Err(errors)
+    } else {
+        Ok(tokens)
+    }
 }
 
 #[cfg(test)]
@@ -127,8 +131,7 @@ mod tests {
     #[test]
     fn test_can_scan_addition_expression() {
         let source = r#"1+1"#;
-        let (scanned_tokens, err) = scan(source);
+        let scanned_tokens = scan(source).expect("1 + 1 was scanned with an error");
         assert_eq!(scanned_tokens.len(), 3);
-        assert_eq!(err.len(), 0);
     }
 }

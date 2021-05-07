@@ -122,7 +122,7 @@ mod tests {
     #[test]
     fn test_can_parse_addition_expression() {
         let source = r#"1+1"#;
-        let (scanned_tokens, _err) = scanner::scan(source);
+        let scanned_tokens = scanner::scan(source).expect("1 + 1 was scanned with an error");
         let (parsed_expression, _errors) = parse(&scanned_tokens);
         assert_eq!(
             vec![Expression::Binary(
@@ -137,7 +137,7 @@ mod tests {
     #[test]
     fn test_can_parse_subtraction_expression() {
         let source = r#"5-2"#;
-        let (scanned_tokens, _err) = scanner::scan(source);
+        let scanned_tokens = scanner::scan(source).expect("5 - 2 was scanned with an error");
         let (parsed_expression, _errors) = parse(&&scanned_tokens);
         assert_eq!(
             vec![Expression::Binary(
@@ -151,8 +151,8 @@ mod tests {
     #[test]
     fn test_can_parse_grouped_expression() {
         let source = r#"(5-2)"#;
-        let (scanned_tokens, _err) = scanner::scan(source);
-        let (parsed_expression, _errors) = parse(&&scanned_tokens);
+        let scanned_tokens = scanner::scan(source).expect("(5-2) was scanned with an error");
+        let (parsed_expression, _errors) = parse(&scanned_tokens);
         assert_eq!(
             vec![Expression::Grouping(Box::new(Expression::Binary(
                 Box::new(Expression::Literal(5.0)),
@@ -166,8 +166,9 @@ mod tests {
     #[test]
     fn test_detect_error_from_unclosed_grouped_expression() {
         let source = r#"(5-2+"#;
-        let (scanned_tokens, _err) = scanner::scan(source);
-        let (_parsed_expression, errors) = parse(&&scanned_tokens);
+        let scanned_tokens = scanner::scan(source).expect("(5-2+ was scanned with an error");
+
+        let (_parsed_expression, errors) = parse(&scanned_tokens);
         let error_message = "Expected ( but got +".to_string();
         assert_eq!(
             vec![ExpressionErrors::UnexpectedElement(error_message)],
