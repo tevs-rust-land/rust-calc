@@ -25,7 +25,7 @@ pub enum ExpressionErrors {
 impl Expression {
     pub fn execute(&self) -> f64 {
         match self {
-            Expression::Literal(str) => str.to_owned(),
+            Expression::Literal(num) => *num,
             Expression::Binary(left, operation, right) => {
                 let left = Expression::execute(left);
                 let right = Expression::execute(right);
