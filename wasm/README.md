@@ -27,4 +27,4 @@ which in JS translates to `number | Error(string)`, hence the need for a try cat
 
 - [ ] Shrink size of the wasm file.
 
-This wasm module has been Built with 🦀🕸 by <a href="https://rustwasm.github.io/">The Rust and WebAssembly Working Group</a>
+This wasm module has been Built with 🦀🕸
