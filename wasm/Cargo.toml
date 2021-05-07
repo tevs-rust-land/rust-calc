@@ -1,8 +1,9 @@
 [package]
 name = "wasm-calc"
-version = "0.3.3"
+version = "0.3.5"
 authors = ["Tevinthuku <tevinthuku@gmail.com>"]
 edition = "2018"
+repository = "https://github.com/tevs-rust-land/rust-calc"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
