@@ -1,6 +1,6 @@
 [package]
 name = "calc_engine"
-version = "0.4.0"
+version = "0.4.1"
 authors = ["Tevinthuku <tevinthuku@gmail.com>"]
 edition = "2018"
 description = "An engine / tool that performs calculations."
@@ -10,4 +10,4 @@ keywords = ["parser", "calculator"]
 repository = "https://github.com/tevs-rust-land/rust-calc"
 
 [dependencies]
-auto_correct_n_suggest = "0.1.0"
+auto_correct_n_suggest = "0.2.0"
