@@ -3083,10 +3083,10 @@ vm-browserify@1.1.2, vm-browserify@^1.0.1:
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
-wasm-calc@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/wasm-calc/-/wasm-calc-0.3.1.tgz#e374e30ee47f9ae8d661727360efad19725a61b6"
-  integrity sha512-cWLFboy6fjsUZKe9OpYrgPueCe261R3s4cgsapDBLr8IJa4t8NpSgjwW82TWJTsAWnyKiWQNFB4GPx952ygkDQ==
+wasm-calc@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/wasm-calc/-/wasm-calc-0.4.1.tgz#1d4147d15a589bdcb363fc3576f749aef36cf890"
+  integrity sha512-l07WpXU+gz277lmaRSspB9XAhvMlXaVuL2AyFgRhrp1dd4VAJ5dD8btMO6bn1bdWKNjmLFlNW8KRWJFMjtYbBg==
 
 watchpack@2.1.1:
   version "2.1.1"

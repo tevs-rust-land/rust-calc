@@ -11,7 +11,7 @@
     "next": "latest",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "wasm-calc": "^0.3.1"
+    "wasm-calc": "^0.4.1"
   },
   "license": "MIT",
   "devDependencies": {
