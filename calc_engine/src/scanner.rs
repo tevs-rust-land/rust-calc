@@ -117,8 +117,8 @@ impl<'a> Scanner<'a> {
     fn keyword(&mut self) -> Result<token::Token, ScannerError> {
         self.advance_while(&|c| token::is_alpha(c));
         let literal_length = self.current_lexeme.len();
-        let keyword: String = self.current_lexeme.chars().take(literal_length).collect();
-
+        let mut keyword: String = self.current_lexeme.chars().take(literal_length).collect();
+        keyword.make_ascii_lowercase();
         match self.keywords.get(&keyword) {
             Some(token) => Ok(*token),
             None => Err(self.attempt_to_suggest_word(&keyword)),
@@ -189,6 +189,13 @@ mod tests {
     fn test_can_scan_with_keywords() {
         let source = r#"1 plus 1"#;
         let scanned_tokens = scan(source).expect("1 plus 1 was scanned with an error");
+        assert_eq!(scanned_tokens.len(), 3);
+    }
+
+    #[test]
+    fn test_scanner_can_recognize_auto_capitalized_keywords() {
+        let source = r#"1 PLUS 1"#;
+        let scanned_tokens = scan(source).expect("1 PLUS 1 was scanned with an error");
         assert_eq!(scanned_tokens.len(), 3);
     }
 
