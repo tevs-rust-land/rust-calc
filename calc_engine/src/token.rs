@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Token {
     Division,
     Addition,
@@ -56,4 +56,8 @@ pub fn is_digit(c: char) -> bool {
 
 pub fn is_whitespace(c: char) -> bool {
     matches!(c, ' ' | '\r' | '\t')
+}
+
+pub fn is_alpha(c: char) -> bool {
+    ('a'..='z').contains(&c) || ('A'..='Z').contains(&c)
 }
