@@ -1,6 +1,7 @@
 use crate::token::{self, Position, Token, TokenWithContext};
 use auto_correct_n_suggest;
 use std::collections::HashMap;
+use std::fmt;
 use std::iter::Peekable;
 use std::str;
 
@@ -10,6 +11,19 @@ pub enum ScannerError {
     NumberParsingError(String),
     DidYouMean(String),
     UnknownKeyWord(String),
+}
+
+impl fmt::Display for ScannerError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            ScannerError::DidYouMean(suggestion) => write!(f, "Did you mean {} ?", suggestion),
+            ScannerError::NumberParsingError(number) => {
+                write!(f, "Unrecognized number {}", number)
+            }
+            ScannerError::UnexpectedCharacter(c) => write!(f, "Unexpected character {}", c),
+            ScannerError::UnknownKeyWord(keyword) => write!(f, "Unknown keyword {}", keyword),
+        }
+    }
 }
 
 struct Scanner<'a> {
@@ -155,7 +169,7 @@ pub fn scan_into_iterator<'a>(
     }
 }
 
-pub fn scan(source: &str) -> Result<Vec<TokenWithContext>, Vec<ScannerError>> {
+pub fn scan(source: &str) -> Result<Vec<TokenWithContext>, Vec<String>> {
     let mut tokens = Vec::new();
     let mut errors = Vec::new();
 
@@ -165,7 +179,7 @@ pub fn scan(source: &str) -> Result<Vec<TokenWithContext>, Vec<ScannerError>> {
                 Token::WhiteSpace => {}
                 _ => tokens.push(token_with_context),
             },
-            Err(error) => errors.push(error),
+            Err(error) => errors.push(format!("{}", error)),
         }
     }
     if errors.is_empty() {
@@ -205,6 +219,6 @@ mod tests {
         let scanned_tokens = scan(source);
         assert!(scanned_tokens.is_err());
         let err = scanned_tokens.unwrap_err();
-        assert_eq!(vec![ScannerError::DidYouMean("plus".to_string())], err)
+        assert_eq!(vec!["Did you mean plus ?".to_string()], err)
     }
 }

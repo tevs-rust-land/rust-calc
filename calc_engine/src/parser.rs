@@ -41,13 +41,13 @@ mod operators {
     }
 }
 
-pub fn parse(tokens: &[TokenWithContext]) -> Result<Vec<Expression>, Vec<ExpressionErrors>> {
+pub fn parse(tokens: &[TokenWithContext]) -> Result<Vec<Expression>, Vec<String>> {
     let mut target: Vec<Expression> = vec![];
-    let mut errors: Vec<ExpressionErrors> = vec![];
+    let mut errors: Vec<String> = vec![];
     let mut peekable_tokens = tokens.iter().peekable();
     while let Some(expr) = addition(&mut peekable_tokens) {
         match expr {
-            Expression::Error(error) => errors.push(error),
+            Expression::Error(error) => errors.push(format!("{}", error)),
             expr => target.push(expr),
         }
     }
@@ -121,7 +121,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::expressions::{Expression, ExpressionErrors, Operation};
+    use crate::expressions::{Expression, Operation};
     use crate::scanner;
     #[test]
     fn test_can_parse_addition_expression() {
@@ -177,10 +177,7 @@ mod tests {
             Ok(_) => unreachable!(),
             Err(errors) => {
                 let error_message = "Expected ( but got +".to_string();
-                assert_eq!(
-                    vec![ExpressionErrors::UnexpectedElement(error_message)],
-                    errors
-                )
+                assert_eq!(vec![error_message], errors)
             }
         }
     }
