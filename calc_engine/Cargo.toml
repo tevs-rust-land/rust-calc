@@ -10,3 +10,4 @@ keywords = ["parser", "calculator"]
 repository = "https://github.com/tevs-rust-land/rust-calc"
 
 [dependencies]
+auto_correct_n_suggest = "0.1.0"

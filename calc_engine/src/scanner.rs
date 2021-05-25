@@ -1,14 +1,20 @@
 use crate::token::{self, Position, Token, TokenWithContext};
+use auto_correct_n_suggest;
+use std::collections::HashMap;
 use std::iter::Peekable;
 use std::str;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ScannerError {
     UnexpectedCharacter(char),
     NumberParsingError(String),
+    DidYouMean(String),
+    UnknownKeyWord(String),
 }
 
 struct Scanner<'a> {
+    keywords: HashMap<String, token::Token>,
+    dictionary: auto_correct_n_suggest::Dictionary,
     current_lexeme: String,
     current_position: Position,
     source: Peekable<str::Chars<'a>>,
@@ -16,10 +22,32 @@ struct Scanner<'a> {
 
 impl<'a> Scanner<'a> {
     fn initialize(source: &'a str) -> Scanner {
+        let mut keywords = HashMap::new();
+        let mut dictionary = auto_correct_n_suggest::Dictionary::new();
+        Scanner::add_keywords_to_hashmap(&mut keywords);
+        Scanner::insert_keywords_to_dictionary(&keywords, &mut dictionary);
         Scanner {
+            dictionary,
+            keywords,
             current_lexeme: "".into(),
             current_position: Position::initial(),
             source: source.chars().into_iter().peekable(),
+        }
+    }
+
+    fn add_keywords_to_hashmap(keywords: &mut HashMap<String, Token>) {
+        keywords.insert("plus".to_string(), token::Token::Addition);
+        keywords.insert("minus".to_string(), token::Token::Subtraction);
+        keywords.insert("multiplication".to_string(), token::Token::Multiply);
+        keywords.insert("division".to_string(), token::Token::Division);
+    }
+
+    fn insert_keywords_to_dictionary(
+        keywords: &HashMap<String, Token>,
+        dictionary: &mut auto_correct_n_suggest::Dictionary,
+    ) {
+        for keyword in keywords.keys() {
+            dictionary.insert(keyword.to_string())
         }
     }
 
@@ -57,6 +85,7 @@ impl<'a> Scanner<'a> {
             ')' => Ok(Token::ClosingBracket),
             c if token::is_whitespace(c) => Ok(Token::WhiteSpace),
             c if token::is_digit(c) => self.digit(),
+            c if token::is_alpha(c) => self.keyword(),
             c => Err(ScannerError::UnexpectedCharacter(c)),
         };
 
@@ -83,6 +112,27 @@ impl<'a> Scanner<'a> {
             .parse::<f64>()
             .map_err(|_| ScannerError::NumberParsingError(num))?;
         Ok(Token::DigitLiteral(num))
+    }
+
+    fn keyword(&mut self) -> Result<token::Token, ScannerError> {
+        self.advance_while(&|c| token::is_alpha(c));
+        let literal_length = self.current_lexeme.len();
+        let keyword: String = self.current_lexeme.chars().take(literal_length).collect();
+
+        match self.keywords.get(&keyword) {
+            Some(token) => Ok(*token),
+            None => Err(self.attempt_to_suggest_word(&keyword)),
+        }
+    }
+    fn attempt_to_suggest_word(&mut self, keyword: &str) -> ScannerError {
+        let auto_suggested_word = self
+            .dictionary
+            .auto_correct(keyword.to_string())
+            .and_then(|suggestions| suggestions.first().cloned());
+        match auto_suggested_word {
+            Some(word) => ScannerError::DidYouMean(word),
+            None => ScannerError::UnknownKeyWord(keyword.to_string()),
+        }
     }
 }
 
@@ -133,5 +183,21 @@ mod tests {
         let source = r#"1+1"#;
         let scanned_tokens = scan(source).expect("1 + 1 was scanned with an error");
         assert_eq!(scanned_tokens.len(), 3);
+    }
+
+    #[test]
+    fn test_can_scan_with_keywords() {
+        let source = r#"1 plus 1"#;
+        let scanned_tokens = scan(source).expect("1 plus 1 was scanned with an error");
+        assert_eq!(scanned_tokens.len(), 3);
+    }
+
+    #[test]
+    fn test_scanner_can_auto_suggest_keyword() {
+        let source = r#"1 plux 1"#;
+        let scanned_tokens = scan(source);
+        assert!(scanned_tokens.is_err());
+        let err = scanned_tokens.unwrap_err();
+        assert_eq!(vec![ScannerError::DidYouMean("plus".to_string())], err)
     }
 }
