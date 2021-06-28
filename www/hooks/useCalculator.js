@@ -17,7 +17,6 @@ export default function useCalculator() {
           data: result,
         };
       } catch (error) {
-        console.log(error);
         return {
           type: "error",
           data: error,
